@@ -3,6 +3,8 @@ import json
 import os
 
 #I am learning about classes with python
+class JSONDecodeErrorCustom(Exception):
+    pass;
 
 class JSONTokenizer:
     def __init__(self, input_str):
@@ -49,9 +51,11 @@ class JSONTokenizer:
         pass
 
 class JSONParser:
-    def __init(self,input_str):
+    def __init__(self,input_str):
         self.lexer=JSONTokenizer(input_str)
         self.current_token=self.lexer.get_next_token()
+        self.myData=None;
+        #return self #seding parser itself
 
     def parse(self):
         return self.parse_value()
@@ -74,6 +78,17 @@ class JSONParser:
             return None
         else:
             raise ValueError(f"Unexpected token: {token_type}")
+        
+    def loadData(self):
+        print("loading")
+        #return self.myData
+        try:
+            return self.myData
+            #raise ValueError("Simulated data loading error")
+        except Exception as e:
+            # Raise a custom exception with a meaningful error message
+            error=f"Error loading data: {str(e)}"
+            raise JSONDecodeErrorCustom(error)
 
 
 def customJsonParser(file_path):
@@ -81,12 +96,24 @@ def customJsonParser(file_path):
     absolute_file_path=script_dir+file_path
     try:
         with open(absolute_file_path,'r') as file:#read the file : file currently contains metadata
-            print (file.read())
-            print(type(file.read()))
-            parser= JSONTokenizer(file.read())#JSONParser
+            #print (file.read())
+            #print(type(file.read()))
+            parser= JSONParser(file.read())#JSONParser
+            jsonData=parser.loadData()
+            print(jsonData)
+        return 0
     except FileNotFoundError:
         print(f"Error: File '{file_path}' not found.")
         return 2
+    except JSONDecodeErrorCustom as err:
+        print(f"Error: Invalid JSON format in file '{file_path}'.")
+        print(err)
+        return 1
+    except Exception as err:
+        print(f"Error: Invalid JSON format in file '{file_path}'.")
+        print(err)
+        return 1
+
         
 
 #I'll implement it myself later
@@ -99,13 +126,13 @@ def jsonParse(file_path):
     try:
         with open(absolute_file_path,'r') as file:
             #read the file : file currently contains metadata
-            print (file.read())
-            print(type(file.read()))
-            print(file)
+            #print (file.read())
+            #print(type(file.read()))
+            #print(file)
             json_data=json.load(file)
-            print(json_data)
+            #print(json_data)
         print("JSON file loaded successfully:")
-        print(json.dumps(json_data, indent=2))  # Display JSON content
+        print(json.dumps(json_data, indent=2))  # Display JSON content with indentation and style
         return 0
     except FileNotFoundError:
         print(f"Error: File '{file_path}' not found.")
@@ -129,6 +156,7 @@ def ccjson(parser,arguments):
     elif args.files:
         for file_path in args.files:
             valid=jsonParse(file_path)
+            #valid=customJsonParser(file_path)
             print(valid)
     else:# If no files or stdin, print help
         print("Weird Command : use ccwc -h or ccwc --help to access help")
@@ -139,5 +167,5 @@ def ccjson(parser,arguments):
 files=['\\tests\\step1\\invalid.json','\\tests\\step1\\valid.json','\\tests\\step2\\invalid.json','\\tests\\step2\\invalid2.json','\\tests\\step2\\valid.json','\\tests\\step2\\valid2.json','\\tests\\step3\\invalid.json','\\tests\\step3\\valid.json','\\tests\\step4\\invalid.json','\\tests\\step4\\valid.json','\\tests\\step4\\valid2.json']
 for file in files:
     #print(file)
-    val=jsonParse(file)
+    val=customJsonParser(file)
     #print(val)
