@@ -32,6 +32,12 @@ class JSONTokenizer:
         elif current_char == '}': #CLOSE OBJECT
             self.position += 1
             return ('RBRACE', '}')
+        elif current_char == '[':
+            self.position+=1
+            return ('LBRACKET','[')
+        elif current_char==']':
+            self.position+=1
+            return ('RBRACKET',']')
         elif current_char == ':': #SEPERATES KEY : VALUE
             self.position += 1
             return ('COLON', ':')
@@ -147,19 +153,50 @@ class JSONParser:
                 temp[kValue]=vValue #can check if key already present then error
                 print("value pair : ",kValue,vValue)
 
-            delim=self.getCurrentToken()
-            print("delim : ",delim)
-            print("current : ",self.current_token)
+            delim=self.current_token
+            print("delim and current : ",delim)
             delimType, delimValue=delim
             if(delimType=='RBRACE'):
                 break
             if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACE')):
                 print("error : comma at end") #throw error
                 break
+            self.getCurrentToken()
 
         print("object over : ",temp)
         #now end is }
         self.getCurrentToken()#move ahead of }
+        return temp
+    
+    def parse_array(self):
+        print("ARRAY START")
+        temp=[]
+        # it should have ::  key : value :: then comma(,) or just end
+        print(self.current_token) #move it ahead of { also
+        while(True):
+            print("current token : ",self.current_token)
+            currentType,currentValue=self.current_token
+            if(currentType=='RBRACKET'): 
+                break
+
+            element=self.parse_value(self.current_token)
+
+            print(element)
+            temp.append(element)
+
+
+            delim=self.current_token
+            print("delim and current : ",delim)
+            delimType, delimValue=delim
+            if(delimType=='RBRACKET'):
+                break
+            if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACKET')):
+                print("error : comma at end") #throw error
+                break
+
+            self.getCurrentToken()#move ahead
+
+        self.getCurrentToken()#move ahead of ]
         return temp
     
     def getKeyValuePair(self):
@@ -193,8 +230,12 @@ class JSONParser:
         #print(token_type)
         if token_type == 'LBRACE':
             return self.parse_object()
+        elif token_type=='LBRACKET':
+            return self.parse_array()
         elif token_type == 'RBRACE':
             return None  # End of input
+        elif token_type=='RBRACKET':
+            return None
         elif token_type == 'STRING':
             return token_value
         elif token_type == 'NUMBER':
