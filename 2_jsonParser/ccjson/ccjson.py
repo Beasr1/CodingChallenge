@@ -1,8 +1,8 @@
 import sys
 import json
 import os
-from ccjson.ccjsonparser import JSONParser
-from ccjson.ccjsonCustomException import JSONDecodeErrorCustom
+from .ccjsonparser import JSONParser
+from .ccjsonCustomException import JSONDecodeErrorCustom
 
 def customJsonParser(file_path):
     print("\n")
@@ -83,3 +83,4 @@ def automateCalling():
         val=customJsonParser(file)
         #print(val)
 
+# automateCalling()

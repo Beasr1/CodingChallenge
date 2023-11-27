@@ -1,3 +1,5 @@
+# todo : REPlace the magic values with enums
+
 class JSONTokenizer:
     def __init__(self, input_str):
         self.input_str = input_str
@@ -39,13 +41,16 @@ class JSONTokenizer:
             raise ValueError(f"Unexpected character: {current_char}")
 
     def read_string(self): # Implement string reading logic
+        if self.input_str[self.position] != '"':
+            raise ValueError("String must start with '\"'")
+        
         stringVal="" # read till next "
         self.position+=1
         while(self.input_str[self.position]!='"'):
             stringVal+=self.input_str[self.position]
             self.position+=1
             if(self.position==len(self.input_str)): #out of bounds and still not encounted end
-                raise Exception("ERROR : out of bounds")
+                raise IndexError("ERROR : out of bounds")
                 break
         self.position+=1 #current is last " so move one more
         return stringVal
@@ -64,7 +69,7 @@ class JSONTokenizer:
             stringNum+=self.input_str[self.position]
             self.position+=1
             if(self.position==len(self.input_str)): #out of bounds and still not encounted end
-                raise Exception("ERROR : out of bounds")
+                raise IndexError("ERROR : out of bounds")
                 break
         
         if(self.input_str[self.position].isalpha()):
@@ -80,7 +85,7 @@ class JSONTokenizer:
             stringVal+=self.input_str[self.position]
             self.position+=1
             if(self.position==len(self.input_str)): #out of bounds and still not encounted end
-                raise Exception("ERROR : out of bounds")
+                raise IndexError("ERROR : out of bounds")
         
         #now we are not on alpha : KEYWORD
         if(stringVal=='true'):

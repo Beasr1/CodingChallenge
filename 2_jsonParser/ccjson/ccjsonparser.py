@@ -1,5 +1,6 @@
-from ccjson.ccjsontokenizer import JSONTokenizer
-from ccjson.ccjsonCustomException import JSONDecodeErrorCustom
+from .ccjsontokenizer import JSONTokenizer
+#from ccjsontokenizer import JSONTokenizer
+from .ccjsonCustomException import JSONDecodeErrorCustom, TrailingCommaError
 
 
 class JSONParser:
@@ -33,7 +34,7 @@ class JSONParser:
 
             self.getCurrentToken()
             if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACE')):
-                raise Exception("ERROR : Trailing Comma")
+                raise TrailingCommaError("ERROR : Trailing Comma")
             
         self.getCurrentToken()# now end is } : move ahead of }
         return temp
@@ -58,7 +59,7 @@ class JSONParser:
                 break
             self.getCurrentToken()#move ahead
             if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACKET')):
-                raise Exception("ERROR : Trailing Comma")
+                raise TrailingCommaError("ERROR : Trailing Comma")
         self.getCurrentToken()#move ahead of ]
         return temp
     
@@ -66,12 +67,12 @@ class JSONParser:
         key=self.getCurrentToken()
         keyType,keyValue=key
         if(keyType!='STRING'):
-            raise Exception("TYPE ERROR : key is not string")
+            raise TypeError("TYPE ERROR : key is not string")
 
         colon=self.getCurrentToken()
         colonType, colonValue=colon
         if(colonType!='COLON'):
-            raise Exception("SYNTAX ERROR : COLON not provided")
+            raise SyntaxError("SYNTAX ERROR : COLON not provided")
 
         value=self.getCurrentToken()
         valueType,valueValue=value
