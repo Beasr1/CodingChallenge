@@ -4,7 +4,6 @@ class JSONTokenizer:
         self.position = 0
 
     def get_next_token(self):
-        
         while self.position < len(self.input_str) and self.input_str[self.position].isspace():
             self.position += 1 #ignore space
         
@@ -46,7 +45,7 @@ class JSONTokenizer:
             stringVal+=self.input_str[self.position]
             self.position+=1
             if(self.position==len(self.input_str)): #out of bounds and still not encounted end
-                print("error : out of bounds") #throw error
+                raise Exception("ERROR : out of bounds")
                 break
         self.position+=1 #current is last " so move one more
         return stringVal
@@ -65,11 +64,11 @@ class JSONTokenizer:
             stringNum+=self.input_str[self.position]
             self.position+=1
             if(self.position==len(self.input_str)): #out of bounds and still not encounted end
-                print("error out of bounds ") #throw error
+                raise Exception("ERROR : out of bounds")
                 break
         
         if(self.input_str[self.position].isalpha()):
-            print("error not number : ",self.input_str[self.position])
+            raise ValueError(f"ERROR : not a number : ${self.input_str[self.position]}")
 
         #now check if number gotten can be converted to number
         #123.231.1324 is not valid so that would be check by converting to int : when parse value
@@ -77,15 +76,11 @@ class JSONTokenizer:
 
     def read_keyword(self): # Implement true, false, null reading logic
         stringVal="" #only lower case true, false and null
-        while(self.input_str[self.position].isalpha()):
-            if(not(self.input_str[self.position]>='a' and self.input_str[self.position]<='z')):
-                print("error in keyword") #throw error
-                break
+        while(self.input_str[self.position].isalpha() or self.input_str[self.position].isdigit()):
             stringVal+=self.input_str[self.position]
             self.position+=1
             if(self.position==len(self.input_str)): #out of bounds and still not encounted end
-                print("error : out of bounds") #throw error
-                break
+                raise Exception("ERROR : out of bounds")
         
         #now we are not on alpha : KEYWORD
         if(stringVal=='true'):
@@ -95,6 +90,6 @@ class JSONTokenizer:
         elif(stringVal=='null'):
             return ('NULL',None)
         else:
-            print("error in keyword") #throw error
+            raise Exception(f"ERROR : keyword {stringVal} not accepted") #throw error
 
         return stringVal

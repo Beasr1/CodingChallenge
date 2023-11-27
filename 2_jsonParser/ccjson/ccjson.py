@@ -1,11 +1,8 @@
 import sys
 import json
 import os
-from ccjsonparser import JSONParser
-
-#I am learning about classes with python
-class JSONDecodeErrorCustom(Exception):
-    pass;
+from ccjson.ccjsonparser import JSONParser
+from ccjson.ccjsonCustomException import JSONDecodeErrorCustom
 
 def customJsonParser(file_path):
     print("\n")
@@ -27,7 +24,7 @@ def customJsonParser(file_path):
         print(err)
         return 1
     except Exception as err:
-        print(f"Error: Invalid JSON format in file '{file_path}'.")
+        print(f"Some other unexpected exception in :  '{file_path}'.")
         print(err)
         return 1
 
@@ -64,16 +61,14 @@ def ccjson(parser,arguments):
         parser.print_help()
         return
     
-
     args=parser.parse_args(arguments)
-
     if not sys.stdin.isatty() or not args.files:
         #nothing file provided
         a=1
     elif args.files:
         for file_path in args.files:
-            valid=jsonParse(file_path)
-            #valid=customJsonParser(file_path)
+            #valid=jsonParse(file_path) inbuilt json module
+            valid=customJsonParser(file_path)
             print(valid)
     else:# If no files or stdin, print help
         print("Weird Command : use ccwc -h or ccwc --help to access help")
@@ -81,8 +76,10 @@ def ccjson(parser,arguments):
     return
 
 #automating test
-files=['\\tests\\step1\\invalid.json','\\tests\\step1\\valid.json','\\tests\\step2\\invalid.json','\\tests\\step2\\invalid2.json','\\tests\\step2\\valid.json','\\tests\\step2\\valid2.json','\\tests\\step3\\invalid.json','\\tests\\step3\\valid.json','\\tests\\step4\\invalid.json','\\tests\\step4\\valid.json','\\tests\\step4\\valid2.json']
-for file in files:
-    #print(file)
-    val=customJsonParser(file)
-    #print(val)
+def automateCalling():
+    files=['\\tests\\step1\\invalid.json','\\tests\\step1\\valid.json','\\tests\\step2\\invalid.json','\\tests\\step2\\invalid2.json','\\tests\\step2\\valid.json','\\tests\\step2\\valid2.json','\\tests\\step3\\invalid.json','\\tests\\step3\\valid.json','\\tests\\step4\\invalid.json','\\tests\\step4\\valid.json','\\tests\\step4\\valid2.json']
+    for file in files:
+        #print(file)
+        val=customJsonParser(file)
+        #print(val)
+

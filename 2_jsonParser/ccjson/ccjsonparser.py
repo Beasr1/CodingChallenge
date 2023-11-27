@@ -1,4 +1,6 @@
-from ccjsontokenizer import JSONTokenizer
+from ccjson.ccjsontokenizer import JSONTokenizer
+from ccjson.ccjsonCustomException import JSONDecodeErrorCustom
+
 
 class JSONParser:
     def __init__(self,input_str):
@@ -7,98 +9,78 @@ class JSONParser:
         self.myData=None;
 
     def parse(self):
-        print("start parsing")
-        print(self.current_token)
         curr=self.getCurrentToken()
         return self.parse_value(curr)
     
     def parse_object(self): #a object {}
-        print("Object START")
         temp={}
 
         # it should have ::  key : value :: then comma(,) or just end
-        print(self.current_token) #move it ahead of { also
         while(True):
-            print("current token : ",self.current_token)
             currentType,currentValue=self.current_token
             if(currentType=='RBRACE'): 
                 break
 
             key, value =self.getKeyValuePair()
 
-            print(key,value)
-            if(key[0]=='STRING'):
-                kValue=self.parse_value(key)
-                vValue=self.parse_value(value)
-                temp[kValue]=vValue #can check if key already present then error
-                print("value pair : ",kValue,vValue)
+            temp[key]=value #can check if key already present then error
+            print("key : value ==> ",key,value)
 
             delim=self.current_token
-            print("delim and current : ",delim)
             delimType, delimValue=delim
             if(delimType=='RBRACE'):
                 break
-            if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACE')):
-                print("error : comma at end") #throw error
-                break
-            self.getCurrentToken()
 
-        print("object over : ",temp)
-        #now end is }
-        self.getCurrentToken()#move ahead of }
+            self.getCurrentToken()
+            if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACE')):
+                raise Exception("ERROR : Trailing Comma")
+            
+        self.getCurrentToken()# now end is } : move ahead of }
         return temp
     
     def parse_array(self):
-        print("ARRAY START")
         temp=[]
-        # it should have ::  key : value :: then comma(,) or just end
-        print(self.current_token) #move it ahead of { also
+
+        # it should have ::  element :: then comma(,) or just end
         while(True):
-            print("current token : ",self.current_token)
             currentType,currentValue=self.current_token
             if(currentType=='RBRACKET'): 
                 break
 
             element=self.parse_value(self.current_token)
 
-            print(element)
+            #print(element)
             temp.append(element)
 
-
             delim=self.current_token
-            print("delim and current : ",delim)
             delimType, delimValue=delim
             if(delimType=='RBRACKET'):
                 break
-            if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACKET')):
-                print("error : comma at end") #throw error
-                break
-
             self.getCurrentToken()#move ahead
-
+            if(delimType=='COMMA' and (self.current_token==None or self.current_token[0]=='RBRACKET')):
+                raise Exception("ERROR : Trailing Comma")
         self.getCurrentToken()#move ahead of ]
         return temp
     
     def getKeyValuePair(self):
         key=self.getCurrentToken()
-        
         keyType,keyValue=key
         if(keyType!='STRING'):
-            print("error in type of key is not string") #throw error
+            raise Exception("TYPE ERROR : key is not string")
 
         colon=self.getCurrentToken()
         colonType, colonValue=colon
         if(colonType!='COLON'):
-            print("error in SYNTAX : COLON not provided") #throw error
+            raise Exception("SYNTAX ERROR : COLON not provided")
 
         value=self.getCurrentToken()
         valueType,valueValue=value
         #check value type if is it correct
 
-        print(key,colon,value)
-        return (key,value)
-
-
+        #print(key,colon,value)
+        keyValue=self.parse_value(key)
+        valueValue=self.parse_value(value) #will give the value
+        return (keyValue,valueValue)
 
     def getCurrentToken(self):
         current = self.current_token
@@ -107,15 +89,14 @@ class JSONParser:
     
     def parse_value(self,current_token):
         token_type, token_value = current_token #as soon as I take current token I want to move to next token : implmemnet it with function call
-        #print(token_type)
         if token_type == 'LBRACE':
-            return self.parse_object()
+            return self.parse_object() #start parsing object
         elif token_type=='LBRACKET':
-            return self.parse_array()
+            return self.parse_array() #start parsing array
         elif token_type == 'RBRACE':
-            return None  # End of input
+            return None # End of object
         elif token_type=='RBRACKET':
-            return None
+            return None # end of array
         elif token_type == 'STRING':
             return token_value
         elif token_type == 'NUMBER':
@@ -130,17 +111,13 @@ class JSONParser:
             raise ValueError(f"Unexpected token: {token_type}")
         
     def processData(self):
-        print("processing")
-        self.myData={} #will add in to the value:attribute
         self.myData=self.parse()
         
     def loadData(self):
         try:
             if(self.myData==None):
-                print("empty data")
                 self.processData()
             return self.myData
-            #raise ValueError("Simulated data loading error")
         except Exception as e:
             # Raise a custom exception with a meaningful error message
             error=f"Error loading data: {str(e)}"
