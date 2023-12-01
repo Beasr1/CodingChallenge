@@ -36,6 +36,8 @@ class PriorityQueue(object):
  
     # for inserting an element in the queue
     def insert(self, data):
+        if not callable(self.compare):
+            raise ValueError("Comparator must be a callable function")
         self.queue.append(data)
         self.__heapify_up() #now reorder up
         
@@ -46,6 +48,9 @@ class PriorityQueue(object):
         #making max heap so child is more than parent
         #self.queue[parent]<self.queue[curr]
         while (curr>0 and self.compare(self.queue[parent],self.queue[curr])):
+            if(not isinstance(self.compare(self.queue[parent],self.queue[curr]),bool)):
+                raise ValueError("Comparator must return a boolean value")
+            
             self.__swap(parent,curr)
             curr=parent
             parent=(int)((curr-1)/2)
@@ -75,16 +80,28 @@ class PriorityQueue(object):
             if(left>=n): break
             if(right>=n):
                 #self.queue[curr]<self.queue[left]
-                if(self.compare(self.queue[curr],self.queue[left])):
+                comp=self.compare(self.queue[curr],self.queue[left])
+                if(not isinstance(comp,bool)):
+                    raise ValueError("Comparator must return a boolean value")
+
+                if(comp):
                     self.__swap(left,curr)
                     curr=left
                     continue
             
             maxIndex=left
+            
             #self.queue[left]<self.queue[right] : default
-            if(self.compare(self.queue[left],self.queue[right])): maxIndex=right
+            comp=self.compare(self.queue[left],self.queue[right])
+            if(not isinstance(comp,bool)):
+                raise ValueError("Comparator must return a boolean value")
+            if(comp): maxIndex=right
+
             #self.queue[curr]<self.queue[maxIndex] : default
-            if(self.compare(self.queue[curr],self.queue[maxIndex]) ):
+            comp=self.compare(self.queue[curr],self.queue[maxIndex])
+            if(not isinstance(comp,bool)):
+                raise ValueError("Comparator must return a boolean value")
+            if(comp):
                 self.__swap(maxIndex,curr)
                 curr=maxIndex
                 continue
