@@ -90,7 +90,7 @@ class PriorityQueue(object):
                     continue
             
             maxIndex=left
-            
+
             #self.queue[left]<self.queue[right] : default
             comp=self.compare(self.queue[left],self.queue[right])
             if(not isinstance(comp,bool)):
@@ -109,15 +109,15 @@ class PriorityQueue(object):
 
 
 
-if __name__ == '__main__':
-    myQueue = PriorityQueue()
-    myQueue.insert(12)
-    myQueue.insert(1)
-    myQueue.insert(14)
-    myQueue.insert(7)
-    print(myQueue)            
-    while not myQueue.isEmpty():
-        print(myQueue.delete()) 
+# if __name__ == '__main__':
+#     myQueue = PriorityQueue()
+#     myQueue.insert(12)
+#     myQueue.insert(1)
+#     myQueue.insert(14)
+#     myQueue.insert(7)
+#     print(myQueue)            
+#     while not myQueue.isEmpty():
+#         print(myQueue.delete()) 
 
 
 '''
