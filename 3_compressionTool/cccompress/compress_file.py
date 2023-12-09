@@ -32,8 +32,8 @@ def compress_data(data):
     print(compressed_data,codes,root)
     return compressed_data, root
 
-def write_compressed_file(file_path, compressed_data, original_size, huffman_tree):
-    output_path = file_path + ".huffman"
+def write_compressed_file(file_path, compressed_data, original_size, huffman_tree,output_file):
+    output_path = output_file + ".huffman"
     with open(output_path, "wb") as output_file:
         # Write the original size to the compressed file
         print("size : ",original_size.to_bytes(4, byteorder="big"))
@@ -79,12 +79,13 @@ def write_compressed_data(file, compressed_data):
 def compress_file(file_path,output_file="output"):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     absolute_file_path=script_dir+file_path
+    absolute_output_path=script_dir+"\\"+output_file
     print(absolute_file_path)
 
 
     data="ascbeei"
     comp_data, huffman_tree=compress_data(data)
-    output_path= write_compressed_file(absolute_file_path, comp_data, len(data), huffman_tree)
+    output_path= write_compressed_file(absolute_file_path, comp_data, len(data), huffman_tree,absolute_output_path)
 
     return 1 
 
