@@ -1,5 +1,5 @@
 import os
-from huffman import HuffmanNode
+from cccompress.huffman import HuffmanNode
 
 def write_decompressed_file(file_path, decompressed_data):
     output_path = file_path[:-8]  # Remove the ".huffman" extension
@@ -13,7 +13,7 @@ def decompress_data(comp,huffman_tree,size): # padding may be there so also save
 
     
     for byte_index, byte in enumerate(comp):
-        print(byte)
+        #print(byte)
         for i in range(8):
             bit = (byte >> (7 - i)) & 1  # Extract each bit from the byte (MSB to LSB)
             #print(bit)
@@ -108,13 +108,13 @@ def decompress_file(file_path,output_file="output"):
 
 
     decomp_data, huffman_tree, size=extract_data(absolute_file_path)
-    print(decomp_data,huffman_tree,size)
+    #print(decomp_data,huffman_tree,size)
     
-    print(decomp_data)
+    #print(decomp_data)
     data=decompress_data(decomp_data,huffman_tree,size)
-    print(data)
+    #print(data)
 
     write_decompressed_file(absolute_file_path, data)
-    return data 
+    print("Data decompressed and extracted to : ",output_file)
 
-decompress_file("//output.huffman")
+#decompress_file("//output.huffman")

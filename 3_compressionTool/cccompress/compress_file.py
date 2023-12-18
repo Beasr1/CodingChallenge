@@ -1,7 +1,7 @@
 import heapq
 import os
 from collections import defaultdict, Counter
-from huffman import HuffmanNode
+from cccompress.huffman import HuffmanNode
 
 def build_huffman_tree(data):
     frequency = Counter(data)
@@ -40,25 +40,28 @@ def compress_data(data):
 
 def write_compressed_file(file_path, compressed_data, original_size, huffman_tree,output_file):
     output_path = output_file + ".huffman"
-    with open(output_path, "wb") as output_file:
-        # Write the original size to the compressed file
-        print("size : ",original_size.to_bytes(4, byteorder="big"))
-        output_file.write(original_size.to_bytes(4, byteorder="big"))
-        output_file.write(b"\n")  # Separate sections with newline
+    try : 
+        with open(output_path, "wb") as output_file:
+            # Write the original size to the compressed file
+            print("size : ",original_size.to_bytes(4, byteorder="big"))
+            output_file.write(original_size.to_bytes(4, byteorder="big"))
+            output_file.write(b"\n")  # Separate sections with newline
 
-        # Write the Huffman tree to the compressed file
-        leaf_nodes= []
-        write_tree(output_file, huffman_tree,leaf_nodes)
-        output_file.write(b"\n")  # Separate sections with newline
-        print("leafnodes : ",leaf_nodes)
+            # Write the Huffman tree to the compressed file
+            leaf_nodes= []
+            write_tree(output_file, huffman_tree,leaf_nodes)
+            output_file.write(b"\n")  # Separate sections with newline
+            #print("leafnodes : ",leaf_nodes)
 
-        leaf_nodes_str = ",".join(leaf_nodes)
-        output_file.write(leaf_nodes_str.encode())
-        output_file.write(b"\n")  # Separate sections with newline
+            leaf_nodes_str = ",".join(leaf_nodes)
+            output_file.write(leaf_nodes_str.encode())
+            output_file.write(b"\n")  # Separate sections with newline
 
 
-        # Write the compressed data to the compressed file
-        write_compressed_data(output_file, compressed_data)
+            # Write the compressed data to the compressed file
+            write_compressed_data(output_file, compressed_data)
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
 
     return output_path
 
@@ -105,10 +108,20 @@ def compress_file(file_path,output_file="output"):
     print(absolute_file_path)
 
 
+
+
     data="I want to be a better person. I hope I can do it."
+    try : 
+        with open(absolute_file_path, "rb") as input_file:
+            data = input_file.read().decode("utf-8") 
+            #print(data)
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+        return 2
+        
     comp_data, huffman_tree=compress_data(data)
     output_path= write_compressed_file(absolute_file_path, comp_data, len(data), huffman_tree,absolute_output_path)
-
+    print("Compressed file stored in : ",output_path)
     return 1 
 
-compress_file('\\file.txt')
+#compress_file('\\test.txt')
