@@ -1,6 +1,10 @@
 import os
 from huffman import HuffmanNode
 
+def write_decompressed_file(file_path, decompressed_data):
+    output_path = file_path[:-8]  # Remove the ".huffman" extension
+    with open(output_path, "w") as output_file:
+        output_file.write(decompressed_data)
 
 def decompress_data(comp,huffman_tree,size): # padding may be there so also saved the size of riginal string
     #print(size)
@@ -9,9 +13,10 @@ def decompress_data(comp,huffman_tree,size): # padding may be there so also save
 
     
     for byte_index, byte in enumerate(comp):
+        print(byte)
         for i in range(8):
             bit = (byte >> (7 - i)) & 1  # Extract each bit from the byte (MSB to LSB)
-
+            #print(bit)
             if bit == 0:
                 current_node = current_node.left
             else:
@@ -62,6 +67,7 @@ def read_tree(data,arr):
         index += 1
 
         if bit == b"0":
+            #print("NULL")
             return None
         node = HuffmanNode()
         node.char = None #will enter it later
@@ -88,18 +94,27 @@ def read_tree(data,arr):
     traverse_tree(root)
     return root #enter huffma tree
 
+def is_compressed_file(file_path):
+    return file_path.lower().endswith('.huffman')
+
 def decompress_file(file_path,output_file="output"):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     absolute_file_path=script_dir+file_path
     print(absolute_file_path)
 
+    if not is_compressed_file(absolute_file_path):
+        print("Not a valid compressed file.")
+        return None
+
 
     decomp_data, huffman_tree, size=extract_data(absolute_file_path)
     print(decomp_data,huffman_tree,size)
     
+    print(decomp_data)
     data=decompress_data(decomp_data,huffman_tree,size)
     print(data)
 
+    write_decompressed_file(absolute_file_path, data)
     return data 
 
 decompress_file("//output.huffman")

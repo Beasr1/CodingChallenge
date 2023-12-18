@@ -1,4 +1,6 @@
 import sys
+from compress_file import compress_file
+from decompress_file import decompress_file
 
 def cccompress(parser,arguments):
     if(arguments[0]=='-h') :
@@ -13,8 +15,10 @@ def cccompress(parser,arguments):
             print(file_path)
             if(args.c):
                 print("compress")
+                compress_file(file_path)
             elif (args.d):
                 print("decompress")
+                decompress_file(file_path)
             else:
                 print("default")
     else:# If no files or stdin, print help
