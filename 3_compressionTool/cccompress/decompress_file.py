@@ -1,8 +1,9 @@
 import os
 from cccompress.huffman import HuffmanNode
 
-def write_decompressed_file(file_path, decompressed_data):
-    output_path = file_path[:-8]  # Remove the ".huffman" extension
+def write_decompressed_file(file_path, decompressed_data,output_path=None):
+    if output_path==None:
+        output_path = file_path[:-8]  # Remove the ".huffman" extension
     with open(output_path, "w") as output_file:
         output_file.write(decompressed_data)
 
@@ -100,6 +101,7 @@ def is_compressed_file(file_path):
 def decompress_file(file_path,output_file="output"):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     absolute_file_path=script_dir+file_path
+    absolute_output_path=script_dir+"\\"+output_file
     print(absolute_file_path)
 
     if not is_compressed_file(absolute_file_path):
@@ -114,7 +116,7 @@ def decompress_file(file_path,output_file="output"):
     data=decompress_data(decomp_data,huffman_tree,size)
     #print(data)
 
-    write_decompressed_file(absolute_file_path, data)
+    write_decompressed_file(absolute_file_path, data,absolute_output_path)
     print("Data decompressed and extracted to : ",output_file)
 
 #decompress_file("//output.huffman")

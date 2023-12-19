@@ -40,6 +40,7 @@ def compress_data(data):
 
 def write_compressed_file(file_path, compressed_data, original_size, huffman_tree,output_file):
     output_path = output_file + ".huffman"
+    print(output_path)
     try : 
         with open(output_path, "wb") as output_file:
             # Write the original size to the compressed file
