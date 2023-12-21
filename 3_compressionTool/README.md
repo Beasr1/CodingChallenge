@@ -1,21 +1,19 @@
 # Count Word Terminal Simulation
 
-This challenge is to build your own JSON parser.
-
-Building a JSON parser is an easy way to learn about parsing techniques which are useful for everything from parsing simple data formats through to building a fully featured compiler for a programming language.
-
-Parsing is often broken up into two stages: lexical analysis and syntactic analysis. Lexical analysis is the process of dividing a sequence of characters into meaningful chunks, called tokens. Syntactic analysis (which is also sometimes referred to as parsing) is the process of analysing the list of tokens to match it to a formal grammar.
+This challenge is to build your own command like tool to compress text files.
+These days the equivalent would be understand the cache hierarchies in a modern CPU and how programming with an awareness of them can radically change the performance of your code.
 
 ## 🔗 Link to Challenge
 
-[![Challenge 2](https://img.shields.io/badge/Challenge:2-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://codingchallenges.fyi/challenges/challenge-json-parser/)
+[![Challenge 3](https://img.shields.io/badge/Challenge:3-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://codingchallenges.fyi/challenges/challenge-huffman/)
 
 ## Commands :
 
 Terminal Simulation will run :
 
-ccjson :
+cccompress :
 
 ```bash
-> ccjson [file_path]
+> cccompress -c [file_path_input] [output_path/optional]
+> cccompress -d [file_path_input] [output_path/optional]
 ```
